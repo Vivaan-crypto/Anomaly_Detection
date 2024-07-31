@@ -2,13 +2,13 @@ import numpy as np
 import pandas as pd
 
 # Set random seed for reproducibility
-np.random.seed(42)
+np.random.seed(60)
 
 # Define sizes
-train_data_size = 200
-anomalies_data_size = 25
-test_normal_size = 25
-test_anomalies_size = 35
+train_data_size = 100000
+anomalies_data_size = 10000
+test_normal_size = 25000
+test_anomalies_size = 7500
 
 # Generate random normal data for training set
 train_normal_data = {
@@ -77,7 +77,7 @@ train_df = pd.concat([train_normal_df, train_anomalies_df], ignore_index=True)
 train_df = train_df.sample(frac=1).reset_index(drop=True)
 
 # Generate random normal data for testing set
-np.random.seed(7)
+np.random.seed(10000)
 test_normal_data = {
     "temperature": np.random.normal(
         loc=np.random.uniform(60, 80),
