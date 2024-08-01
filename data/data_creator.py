@@ -5,10 +5,10 @@ import pandas as pd
 np.random.seed(60)
 
 # Define sizes
-train_data_size = 100000
-anomalies_data_size = 10000
-test_normal_size = 25000
-test_anomalies_size = 7500
+train_data_size = 100
+anomalies_data_size = 10
+test_normal_size = 250
+test_anomalies_size = 75
 
 # Generate random normal data for training set
 train_normal_data = {
