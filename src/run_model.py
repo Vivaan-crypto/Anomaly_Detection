@@ -7,8 +7,8 @@ from flask import Flask, redirect, render_template, request, url_for
 
 # Configuring Flask
 app = Flask(__name__)
-app.config["UPLOAD_FOLDER"] = "uploads"
-os.makedirs(app.config["UPLOAD_FOLDER"], exist_ok=True)
+os.makedirs("uploads", exist_ok=True)
+file_path = None
 
 # Load the trained model
 model_path = "models/Anomaly_Detection_100HP_Motor.pkl"
@@ -24,22 +24,21 @@ def index():
 
 @app.route("/upload", methods=["POST"])
 def upload_file():
-    if "file" not in request.files:
-        print(request.url)
-        return redirect(request.url)
-    file = request.files["file"]
-    if file.filename == "":
-        return redirect(request.url)
+    file = request.files["data_file"]
+
     if file:
+        global file_path
         filename = file.filename
-        file_path = os.path.join(app.config["UPLOAD_FOLDER"], filename)
+        file_path = os.path.join("uploads", filename)
         file.save(file_path)
         return redirect(url_for("predict", filename=filename))
+    else:
+        print("NO FILE!!!")
+        return render_template("index.html")
 
 
 @app.route("/predict/<filename>")
 def predict(filename):
-    file_path = os.path.join(app.config["UPLOAD_FOLDER"], filename)
     data = pd.read_csv(file_path)
 
     # Assuming the data has the same structure as the training data
@@ -52,7 +51,6 @@ def predict(filename):
     # Plot the results
     plot(test_df=data, y_pred=y_pred)
     plot_url = url_for("static", filename="plot.png")
-    print(acc)
     return render_template("result.html", plot_url=plot_url, acc=acc)
 
 
@@ -125,11 +123,10 @@ def plot(test_df, y_pred):
     plt.ylabel("Values")
     plt.legend(
         loc="upper left",
-        # bbox_to_anchor=(1, 1),
+        bbox_to_anchor=(1, 1),
     )
     plt.tight_layout()  # Adjust layout to make room for the legend
     plt.savefig("static/plot.png", bbox_inches="tight")  # Save with tight bounding box
-    plt.show()
     plt.close()
 
 
